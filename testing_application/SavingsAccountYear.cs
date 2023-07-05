@@ -11,40 +11,72 @@ namespace testing_application
         private int startingBalance = 0;
         private int interestRate = 0;
         private int capitalGainsAmount = 0;
+        private int startingPrincipal = 0;
+        private int totalWithdrawn = 0;
 
-        public SavingsAccountYear(int startingBalance, int interestRate) { 
-            this.startingBalance = startingBalance;
-            this.interestRate = interestRate;
-        }
+      
 
-        public SavingsAccountYear(int startingBalance,int capitalGainsAmount, int interestRate)
+        public SavingsAccountYear(int startingBalance,int startingPrincipal, int interestRate)
         {
             this.startingBalance = startingBalance;
             this.interestRate = interestRate;
-            this.capitalGainsAmount = capitalGainsAmount;
+            this.startingPrincipal = startingPrincipal;
+            this.capitalGainsAmount = startingBalance - startingPrincipal;
         }
         public int getStartingBalance()
         {
             return startingBalance;
         }
 
-        public int getEndingBalance()
+        public int getEndingBalance(int capitalGainsTaxRate)
         {
-            return startingBalance + (getStartingBalance() * interestRate / 100);
+            int modifiedStart = startingBalance - getTotalWithdrawn() - capitalGainsTaxIncured(capitalGainsTaxRate);
+            return modifiedStart + (modifiedStart * interestRate / 100);
+        }
+        public int getStartingPrincipal()
+        {
+            return startingPrincipal - capitalGainsAmount;
+        }
+
+        public int startingcapitalGains()
+        {
+            return getStartingBalance() - getStartingPrincipal();
         }
         public int getInterestRate()
         {
             return interestRate;
         }
-
-        public SavingsAccountYear nextYear()
+        public int endingPrincipal()
         {
-            return new SavingsAccountYear(this.getEndingBalance(), interestRate);
+            return Math.Max(0, getStartingPrincipal() - getTotalWithdrawn());
+        }
+        public SavingsAccountYear nextYear(int capitalGainsTaxRate)
+        {
+            return new SavingsAccountYear(this.getEndingBalance(capitalGainsTaxRate),0, interestRate);
         }
 
         public void withdraw(int amount)
         {
-            startingBalance -= amount;
+            this.totalWithdrawn += amount;
         }
+
+        public int getTotalWithdrawn()
+        {
+            return totalWithdrawn;
+        }
+
+        public int capitalGainsWithdrawn()
+        {
+            return Math.Max(0, -1 * (getStartingPrincipal() - getTotalWithdrawn()));
+        }
+
+        public int capitalGainsTaxIncured(int taxRate)
+        {
+            double dblTaxRate = taxRate / 100.0;
+            double dblCapitalGains = capitalGainsWithdrawn();
+
+            return (int)((dblCapitalGains / (1 - dblTaxRate)) - dblCapitalGains);
+        }
+
     }
 }
