@@ -10,72 +10,43 @@ namespace testing_tests
         private const int TaxRate = 25;
 
         [TestMethod]
-        public void getStartingBalanceMatchesConstructor()
-        {
-            StockMarketYear account = newAccount();
-            Assert.AreEqual(10000,account.getStartingBalance());
-        }
-
-        [TestMethod]
-        public void startingPrincipalMatchesConstructor()
+        public void startingValues ()
         {
             StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(3000, year.getStartingPrincipal());
+            Assert.AreEqual(10000,year.getStartingBalance(),"Starting Balance");
+            Assert.AreEqual(3000, year.getStartingPrincipal(),"Starting Principal");
+            Assert.AreEqual(10, newAccount().getInterestRate(), "Interest Rate");
+            Assert.AreEqual(0, year.getTotalWithdrawn(TaxRate), "Total Withdrawn default");
         }
 
         [TestMethod]
-        public void getInterestRateMatchesConstructor()
-        {
-            Assert.AreEqual(10, newAccount().getInterestRate());
-        }
-
-        [TestMethod]
-        public void startingCapitalGainsIsStartingBalanceMinusStartingPrincipal()
+        public void endingPrincipal()
         {
             StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(7000, year.startingcapitalGains());
-        }
-       
-        [TestMethod]
-        public void endingPrincipalConsidersWithdrawls()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(3000, year.getStartingPrincipal());
-            year.withdraw(2000);
-            Assert.AreEqual(1000, year.endingPrincipal());
-        }
-
-        [TestMethod]
-        public void endingPrincipalNeverGoesBelowZero()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(3000, year.getStartingPrincipal());
-            year.withdraw(4000);
-            Assert.AreEqual(0, year.endingPrincipal());
-        }
-
-        [TestMethod]
-        public void interestEarnedIsStartingBalanceCombinedWithInterestRate()
-        {
-            StockMarketYear year = new StockMarketYear(10000,3000, 10);
-            Assert.AreEqual(1000, year.getInterestEarned(TaxRate));
-        }
-
-        [TestMethod]
-        public void withdrawnFundDoNotEarnInterest()
-        {
-            StockMarketYear year = newAccount();
             year.withdraw(1000);
-            Assert.AreEqual(900, year.getInterestEarned(TaxRate));
+            Assert.AreEqual(2000, year.endingPrincipal(),"ending principal considers withdrawals");
+            year.withdraw(500);
+            Assert.AreEqual(1500, year.endingPrincipal(),"ending principal totals mutiple withdrawals");
+            year.withdraw(3000);
+            Assert.AreEqual(0, year.endingPrincipal(),"ending principalnever goes below zero");
         }
+
+        [TestMethod]
+        public void interestEarned()
+        {
+            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
+            Assert.AreEqual(1000, year.getInterestEarned(25), "basic interest earned");
+            year.withdraw(2000);
+            Assert.AreEqual(800, year.getInterestEarned(25), "withdrawals dont earn interest");
+        }        
 
         [TestMethod]
         public void totalWithdrawnIncludingCapitalGains()
         {
             StockMarketYear year = new StockMarketYear(10000, 0, 10);
             year.withdraw(1000);
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate));
-            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate));
+            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate),"capital gains tax");
+            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate),"total withdrawn");
         }
 
         [TestMethod]
@@ -83,29 +54,10 @@ namespace testing_tests
         {
             StockMarketYear year = new StockMarketYear(10000, 0, 10);
             year.withdraw(1000);
-            Assert.AreEqual(1000, year.capitalGainsWithdrawn());
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate));
-            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate));
-            Assert.AreEqual(866, year.getInterestEarned(TaxRate));
-        }
-        [TestMethod]
-        public void endingCapitalGainsIncludesInterestEarned()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(7000, year.startingcapitalGains());
-            Assert.AreEqual(8000, year.endingcapitalGains(TaxRate));
-        }
-
-        [TestMethod]
-        public void pendingCapitalGainsIncludesCapitalGainsWithdrawn()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 0, 10);
-            Assert.AreEqual(10000, year.startingcapitalGains());
-            year.withdraw(1000);
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate));
-            Assert.AreEqual(866, year.getInterestEarned(TaxRate));
-            Assert.AreEqual(9533, year.endingcapitalGains(TaxRate));
-
+            Assert.AreEqual(1000, year.capitalGainsWithdrawn(),"capital gains withdrawn");
+            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate),"capital gains tax");
+            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate),"total withdrawn");
+            Assert.AreEqual(866, year.getInterestEarned(TaxRate),"interest earned");
         }
 
         [TestMethod]
@@ -157,18 +109,14 @@ namespace testing_tests
         }
 
         [TestMethod]
-        public void nextYearsStartingBalanceEqualThisYearEndingBalance()
+        public void nextYears()
         {
             StockMarketYear thisYear = newAccount();
-            Assert.AreEqual(thisYear.getEndingBalance(TaxRate), thisYear.nextYear(TaxRate).getStartingBalance());
-        }
-
-        [TestMethod]
-        public void nextYearsInterestRateEqualThisYearInterestRate()
-        {
-            StockMarketYear thisYear = newAccount();
-            Assert.AreEqual(thisYear.getInterestRate(), thisYear.nextYear(TaxRate).getInterestRate());
-        }
+            StockMarketYear nextYear = thisYear.nextYear(TaxRate);
+            Assert.AreEqual(thisYear.getEndingBalance(TaxRate), nextYear.getStartingBalance(),"Starting Balance");
+            Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal(),"Starting Principal");
+            Assert.AreEqual(thisYear.getInterestRate(), nextYear.getInterestRate(),"Interest");
+        }   
 
         private StockMarketYear newAccount()
         {

@@ -8,10 +8,10 @@ namespace testing_application
 {
     public class StockMarketYear
     {
-        private int startingBalance = 0;
-        private int interestRate = 0;
-        private int startingPrincipal = 0;
-        private int totalWithdrawals = 0;
+        private int startingBalance;
+        private int interestRate;
+        private int startingPrincipal;
+        private int totalWithdrawals;
 
       
 
@@ -20,6 +20,7 @@ namespace testing_application
             this.startingBalance = startingBalance;
             this.interestRate = interestRate;
             this.startingPrincipal = startingPrincipal;
+            this.totalWithdrawals = 0;
         }
         public int getStartingBalance()
         {
@@ -31,10 +32,7 @@ namespace testing_application
             return startingPrincipal;
         }
 
-        public int startingcapitalGains()
-        {
-            return getStartingBalance() - getStartingPrincipal();
-        }
+    
         public int getInterestRate()
         {
             return interestRate;
@@ -82,7 +80,7 @@ namespace testing_application
 
         public StockMarketYear nextYear(int capitalGainsTaxRate)
         {
-            return new StockMarketYear(this.getEndingBalance(capitalGainsTaxRate),0, interestRate);
+            return new StockMarketYear(this.getEndingBalance(capitalGainsTaxRate),this.endingPrincipal(),this.getInterestRate());
         }
 
      
