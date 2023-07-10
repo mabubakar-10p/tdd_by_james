@@ -41,7 +41,7 @@ namespace testing_application
         {
             this.totalWithdrawals += amount;
         }
-        public int capitalGainsWithdrawn()
+        private int capitalGainsWithdrawn()
         {
             return Math.Max(0, -1 * (getStartingPrincipal() - totalWithdrawals));
         }
@@ -61,6 +61,11 @@ namespace testing_application
         {
             return (startingBalance - getTotalWithdrawn(capitalGainsTaxRate)) * interestRate / 100;
         }
+        public int getEndingBalance(int capitalGainsTaxRate)
+        {
+            int modifiedStart = startingBalance - getTotalWithdrawn(capitalGainsTaxRate);
+            return modifiedStart + getInterestEarned(capitalGainsTaxRate);
+        }
         public int endingPrincipal()
         {
             return Math.Max(0, getStartingPrincipal() - totalWithdrawals);
@@ -69,12 +74,7 @@ namespace testing_application
         {
             return getEndingBalance(capitalGainTaxRate) - endingPrincipal() ;
         }   
-        
-        public int getEndingBalance(int capitalGainsTaxRate)
-        {
-            int modifiedStart = startingBalance - getTotalWithdrawn(capitalGainsTaxRate);
-            return modifiedStart + getInterestEarned(capitalGainsTaxRate);
-        }
+      
 
 
 

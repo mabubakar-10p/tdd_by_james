@@ -8,120 +8,79 @@ namespace testing_tests
     public class StockMarketYearTest
     {
         private const int TaxRate = 25;
+        private const int StartingBalance = 10000;
+        private const int StartingPrincipal = 3000;
+        private const int InterestRate = 10;
 
         [TestMethod]
         public void startingValues ()
         {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
+            StockMarketYear year = newYear();
             Assert.AreEqual(10000,year.getStartingBalance(),"Starting Balance");
             Assert.AreEqual(3000, year.getStartingPrincipal(),"Starting Principal");
-            Assert.AreEqual(10, newAccount().getInterestRate(), "Interest Rate");
+            Assert.AreEqual(10, year.getInterestRate(), "Interest Rate");
             Assert.AreEqual(0, year.getTotalWithdrawn(TaxRate), "Total Withdrawn default");
         }
 
+
         [TestMethod]
-        public void endingPrincipal()
+        public void capitalGainsTax()
         {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            year.withdraw(1000);
-            Assert.AreEqual(2000, year.endingPrincipal(),"ending principal considers withdrawals");
-            year.withdraw(500);
-            Assert.AreEqual(1500, year.endingPrincipal(),"ending principal totals mutiple withdrawals");
-            year.withdraw(3000);
-            Assert.AreEqual(0, year.endingPrincipal(),"ending principalnever goes below zero");
+            StockMarketYear year = newYear();
+            year.withdraw(4000);
+            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate), "capital gains tax includes tax on withdrawals to cover capital gains");
+            Assert.AreEqual(4333, year.getTotalWithdrawn(TaxRate), "total withdrawn includes capital gains tax");
         }
 
         [TestMethod]
         public void interestEarned()
         {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            Assert.AreEqual(1000, year.getInterestEarned(25), "basic interest earned");
+            StockMarketYear year = newYear();
+            Assert.AreEqual(1000, year.getInterestEarned(TaxRate), "basic interest earned");
             year.withdraw(2000);
-            Assert.AreEqual(800, year.getInterestEarned(25), "withdrawals dont earn interest");
-        }        
-
-        [TestMethod]
-        public void totalWithdrawnIncludingCapitalGains()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 0, 10);
-            year.withdraw(1000);
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate),"capital gains tax");
-            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate),"total withdrawn");
-        }
-
-        [TestMethod]
-        public void capitalGainsTaxesDoNotEarnInterest()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 0, 10);
-            year.withdraw(1000);
-            Assert.AreEqual(1000, year.capitalGainsWithdrawn(),"capital gains withdrawn");
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(TaxRate),"capital gains tax");
-            Assert.AreEqual(1333, year.getTotalWithdrawn(TaxRate),"total withdrawn");
-            Assert.AreEqual(866, year.getInterestEarned(TaxRate),"interest earned");
-        }
-
-        [TestMethod]
-        public void getEndingBalanceAppliesInterestRate()
-        {
-            Assert.AreEqual(11000, newAccount().getEndingBalance(TaxRate));
-        }
-
-       
-        [TestMethod]
-        public void mutipleWithdrawlsInAYearAreTotaled()
-        {
-            StockMarketYear year = newAccount() ;
-            year.withdraw(1000);
+            Assert.AreEqual(800, year.getInterestEarned(TaxRate), "withdrawals dont earn interest");
             year.withdraw(2000);
-            Assert.AreEqual(3000, year.getTotalWithdrawn(TaxRate));
+            Assert.AreEqual(566, year.getInterestEarned(TaxRate), "capital gains tax withdrawals dont earn interest");
         }
+
         [TestMethod]
-        public void withdrawingMoreThanPrincipalTakesFromCapitalGains()
+        public void endingPrincipal()
         {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10); ;
+            StockMarketYear year = newYear();
             year.withdraw(1000);
-            Assert.AreEqual(0, year.capitalGainsWithdrawn());
+            Assert.AreEqual(2000, year.endingPrincipal(), "ending principal considers withdrawals");
+            year.withdraw(500);
+            Assert.AreEqual(1500, year.endingPrincipal(), "ending principal totals mutiple withdrawals");
             year.withdraw(3000);
-            Assert.AreEqual(1000, year.capitalGainsWithdrawn());
-        }
-   
-        
-       
-       
-        [TestMethod]
-        public void capitalGainsTaxIncured_NeedsToCoverCapitalGainsWithdrawn_AndAdditionalCapitalGainsWithdrawnToPayCapitalGainsTax()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            year.withdraw(5000);
-            Assert.AreEqual(2000,year.capitalGainsWithdrawn());
-            Assert.AreEqual(666,year.capitalGainsTaxIncured(TaxRate));
-        }
-        [TestMethod]
-        public void capitalGainsTaxIsIncludedInEndingBalance()
-        {
-            StockMarketYear year = new StockMarketYear(10000, 3000, 10);
-            int amountWithdrawn = 5000;
-            year.withdraw(amountWithdrawn);
-            int expectedCapitalGainsTax = 666;
-            Assert.AreEqual(expectedCapitalGainsTax, year.capitalGainsTaxIncured(TaxRate));
-            int expectedStartingBalanceAfterWithdrawls = 10000 - amountWithdrawn - expectedCapitalGainsTax;
-            Assert.AreEqual((int)(expectedStartingBalanceAfterWithdrawls*1.10), year.getEndingBalance(TaxRate));
+            Assert.AreEqual(0, year.endingPrincipal(), "ending principalnever goes below zero");
         }
 
+       
+
         [TestMethod]
-        public void nextYears()
+        public void endingBalance()
         {
-            StockMarketYear thisYear = newAccount();
+            StockMarketYear year = newYear();
+            Assert.AreEqual(11000, year.getEndingBalance(TaxRate), "ending balance includes interest");
+            year.withdraw(1000);
+            Assert.AreEqual(9900, year.getEndingBalance(TaxRate), "ending balance includes withdrawals");
+            year.withdraw(3000);
+            Assert.AreEqual(6233, year.getEndingBalance(TaxRate), "ending balance includes capital gains tax withdrawals");
+        }
+       
+        [TestMethod]
+        public void nextYearStartingValuesMatchesThisYearEndingValues()
+        {
+            StockMarketYear thisYear = newYear();
             StockMarketYear nextYear = thisYear.nextYear(TaxRate);
             Assert.AreEqual(thisYear.getEndingBalance(TaxRate), nextYear.getStartingBalance(),"Starting Balance");
             Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal(),"Starting Principal");
             Assert.AreEqual(thisYear.getInterestRate(), nextYear.getInterestRate(),"Interest");
-        }   
+        }
 
-        private StockMarketYear newAccount()
+        private StockMarketYear newYear()
         {
-            StockMarketYear account = new StockMarketYear(10000,10000, 10);
-            return account;
+            return new StockMarketYear(StartingBalance, StartingPrincipal, InterestRate);
         }
     }
 }
