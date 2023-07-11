@@ -13,10 +13,34 @@ namespace testing_application
         public TaxRate(double rateAsPercentage) {
             this.rate = (decimal)(rateAsPercentage / 100);
         }
+        public int getRate()
+        {
+            return (int)(rate * 100);
+        }
 
-        public int taxFor(int amount)
+        public int simpleTaxFor(int amount)
         {
             return (int)(amount * rate);
         }
+        public int compoundTaxFor(int amount)
+        {
+            return (int)(amount / (1 - rate)) - amount;
+        }
+
+        public override string ToString()
+        {
+            return (rate * 100) + "%";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 }
