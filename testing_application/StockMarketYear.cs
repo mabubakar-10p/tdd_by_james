@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace testing_application
 {
@@ -10,15 +6,17 @@ namespace testing_application
     {
         private int startingBalance;
         private int interestRate;
+        private int capitalGainsTaxRate;
         private int startingPrincipal;
         private int totalWithdrawals;
 
       
 
-        public StockMarketYear(int startingBalance,int startingPrincipal, int interestRate)
+        public StockMarketYear(int startingBalance,int startingPrincipal, int interestRate, int capitalGainsTaxRate)
         {
             this.startingBalance = startingBalance;
             this.interestRate = interestRate;
+            this.capitalGainsTaxRate = capitalGainsTaxRate;
             this.startingPrincipal = startingPrincipal;
             this.totalWithdrawals = 0;
         }
@@ -37,6 +35,10 @@ namespace testing_application
         {
             return interestRate;
         }
+        public int getCapitalGainsTaxRate()
+        {
+            return capitalGainsTaxRate;
+        }
         public void withdraw(int amount)
         {
             this.totalWithdrawals += amount;
@@ -46,49 +48,35 @@ namespace testing_application
             return Math.Max(0, -1 * (getStartingPrincipal() - totalWithdrawals));
         }
 
-        public int capitalGainsTaxIncured(int taxRate)
+        public int capitalGainsTaxIncured()
         {
-            double dblTaxRate = taxRate / 100.0;
+            double dblTaxRate = capitalGainsTaxRate / 100.0;
             double dblCapitalGains = capitalGainsWithdrawn();
 
             return (int)((dblCapitalGains / (1 - dblTaxRate)) - dblCapitalGains);
         }
-        public int getTotalWithdrawn(int capitalGainsTaxRate)
+        public int getTotalWithdrawn()
         {
-            return totalWithdrawals + capitalGainsTaxIncured(capitalGainsTaxRate);
+            return totalWithdrawals + capitalGainsTaxIncured();
         }
-        public int getInterestEarned(int capitalGainsTaxRate)
+        public int getInterestEarned()
         {
-            return (startingBalance - getTotalWithdrawn(capitalGainsTaxRate)) * interestRate / 100;
+            return (startingBalance - getTotalWithdrawn()) * interestRate / 100;
         }
-        public int getEndingBalance(int capitalGainsTaxRate)
+        public int getEndingBalance()
         {
-            int modifiedStart = startingBalance - getTotalWithdrawn(capitalGainsTaxRate);
-            return modifiedStart + getInterestEarned(capitalGainsTaxRate);
+            int modifiedStart = startingBalance - getTotalWithdrawn();
+            return modifiedStart + getInterestEarned();
         }
         public int endingPrincipal()
         {
             return Math.Max(0, getStartingPrincipal() - totalWithdrawals);
         }
-        public int endingcapitalGains(int capitalGainTaxRate)
-        {
-            return getEndingBalance(capitalGainTaxRate) - endingPrincipal() ;
-        }   
       
-
-
-
-        public StockMarketYear nextYear(int capitalGainsTaxRate)
+        public StockMarketYear nextYear()
         {
-            return new StockMarketYear(this.getEndingBalance(capitalGainsTaxRate),this.endingPrincipal(),this.getInterestRate());
+            return new StockMarketYear(this.getEndingBalance(), this.endingPrincipal(),this.getInterestRate(),this.getCapitalGainsTaxRate());
         }
 
-     
-
-        
-      
-       
-
-      
     }
 }

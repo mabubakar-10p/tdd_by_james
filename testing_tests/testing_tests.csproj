@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="StockMarketYearTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaxRateTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
