@@ -6,22 +6,17 @@ using System.Threading.Tasks;
 
 namespace testing_application
 {
-    public class TaxRate
+    public class InterestRate
     {
         private decimal rate;
 
-        public TaxRate(double rateAsPercentage) {
+        public InterestRate(double rateAsPercentage) {
             this.rate = (decimal)(rateAsPercentage / 100.0);
         }
-      
-
-        public int simpleTaxFor(int amount)
+        
+        public int interestOn(int amount)
         {
             return (int)(amount * rate);
-        }
-        public int compoundTaxFor(int amount)
-        {
-            return (int)(amount / (1 - rate)) - amount;
         }
 
         public override string ToString()
@@ -36,7 +31,7 @@ namespace testing_application
                 return false;
             }
 
-            TaxRate other = (TaxRate)obj;
+            InterestRate other = (InterestRate)obj;
             return rate == other.rate;
         }
 

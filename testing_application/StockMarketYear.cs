@@ -5,14 +5,14 @@ namespace testing_application
     public class StockMarketYear
     {
         private int startingBalance;
-        private int interestRate;
-        private int capitalGainsTaxRate;
+        private InterestRate interestRate;
+        private TaxRate capitalGainsTaxRate;
         private int startingPrincipal;
         private int totalWithdrawals;
 
       
 
-        public StockMarketYear(int startingBalance,int startingPrincipal, int interestRate, int capitalGainsTaxRate)
+        public StockMarketYear(int startingBalance,int startingPrincipal, InterestRate interestRate, TaxRate capitalGainsTaxRate)
         {
             this.startingBalance = startingBalance;
             this.interestRate = interestRate;
@@ -31,11 +31,11 @@ namespace testing_application
         }
 
     
-        public int getInterestRate()
+        public InterestRate getInterestRate()
         {
             return interestRate;
         }
-        public int getCapitalGainsTaxRate()
+        public TaxRate getCapitalGainsTaxRate()
         {
             return capitalGainsTaxRate;
         }
@@ -50,10 +50,7 @@ namespace testing_application
 
         public int capitalGainsTaxIncured()
         {
-            double dblTaxRate = capitalGainsTaxRate / 100.0;
-            double dblCapitalGains = capitalGainsWithdrawn();
-
-            return (int)((dblCapitalGains / (1 - dblTaxRate)) - dblCapitalGains);
+            return capitalGainsTaxRate.compoundTaxFor(capitalGainsWithdrawn());
         }
         public int getTotalWithdrawn()
         {
@@ -61,12 +58,11 @@ namespace testing_application
         }
         public int getInterestEarned()
         {
-            return (startingBalance - getTotalWithdrawn()) * interestRate / 100;
+            return interestRate.interestOn(startingBalance - getTotalWithdrawn());
         }
         public int getEndingBalance()
         {
-            int modifiedStart = startingBalance - getTotalWithdrawn();
-            return modifiedStart + getInterestEarned();
+            return startingBalance - getTotalWithdrawn() + getInterestEarned();
         }
         public int endingPrincipal()
         {

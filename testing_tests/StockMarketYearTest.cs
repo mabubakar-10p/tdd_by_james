@@ -7,10 +7,10 @@ namespace testing_tests
     [TestClass]
     public class StockMarketYearTest
     {
-        private const int CapitalGainsTaxRate = 25;
+        private static TaxRate CapitalGainsTaxRate = new TaxRate(25);
         private const int StartingBalance = 10000;
         private const int StartingPrincipal = 3000;
-        private const int InterestRate = 10;
+        private static InterestRate InterestRate = new InterestRate(10);
 
         [TestMethod]
         public void startingValues ()
