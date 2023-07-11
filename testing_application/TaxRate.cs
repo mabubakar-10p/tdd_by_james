@@ -34,12 +34,18 @@ namespace testing_application
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            TaxRate other = (TaxRate)obj;
+            return rate == other.rate;
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return rate.GetHashCode();
         }
 
     }
