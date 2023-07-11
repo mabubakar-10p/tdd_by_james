@@ -4,15 +4,15 @@ namespace testing_application
 {
     public class StockMarketYear
     {
-        private int startingBalance;
+        private Dollars startingBalance;
         private InterestRate interestRate;
         private TaxRate capitalGainsTaxRate;
-        private int startingPrincipal;
+        private Dollars startingPrincipal;
         private int totalWithdrawals;
 
       
 
-        public StockMarketYear(int startingBalance,int startingPrincipal, InterestRate interestRate, TaxRate capitalGainsTaxRate)
+        public StockMarketYear(Dollars startingBalance,Dollars startingPrincipal, InterestRate interestRate, TaxRate capitalGainsTaxRate)
         {
             this.startingBalance = startingBalance;
             this.interestRate = interestRate;
@@ -20,14 +20,14 @@ namespace testing_application
             this.startingPrincipal = startingPrincipal;
             this.totalWithdrawals = 0;
         }
-        public int getStartingBalance()
+        public Dollars getStartingBalance()
         {
             return startingBalance;
         }
 
-        public int getStartingPrincipal()
+        public Dollars getStartingPrincipal()
         {
-            return startingPrincipal;
+            return startingPrincipal ;
         }
 
     
@@ -45,7 +45,7 @@ namespace testing_application
         }
         private int capitalGainsWithdrawn()
         {
-            return Math.Max(0, -1 * (getStartingPrincipal() - totalWithdrawals));
+            return Math.Max(0, -1 * (getStartingPrincipal().getAmount() - totalWithdrawals));
         }
 
         public int capitalGainsTaxIncured()
@@ -58,15 +58,15 @@ namespace testing_application
         }
         public int getInterestEarned()
         {
-            return interestRate.interestOn(startingBalance - getTotalWithdrawn());
+            return interestRate.interestOn(startingBalance.getAmount() - getTotalWithdrawn());
         }
         public int getEndingBalance()
         {
-            return startingBalance - getTotalWithdrawn() + getInterestEarned();
+            return startingBalance.getAmount() - getTotalWithdrawn() + getInterestEarned();
         }
         public int endingPrincipal()
         {
-            return Math.Max(0, getStartingPrincipal() - totalWithdrawals);
+            return startingPrincipal.subtractToZero(new Dollars(totalWithdrawals)).getAmount();
         }
       
         public StockMarketYear nextYear()

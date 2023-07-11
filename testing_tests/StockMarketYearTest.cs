@@ -8,8 +8,8 @@ namespace testing_tests
     public class StockMarketYearTest
     {
         private static TaxRate CapitalGainsTaxRate = new TaxRate(25);
-        private const int StartingBalance = 10000;
-        private const int StartingPrincipal = 3000;
+        private static Dollars StartingBalance = new Dollars(10000);
+        private static Dollars StartingPrincipal = new Dollars(3000);
         private static InterestRate InterestRate = new InterestRate(10);
 
         [TestMethod]
