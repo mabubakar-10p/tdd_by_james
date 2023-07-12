@@ -20,7 +20,7 @@ namespace testing_tests
             Assert.AreEqual(StartingPrincipal, year.getStartingPrincipal(),"Starting Principal");
             Assert.AreEqual(InterestRate, year.getInterestRate(), "Interest Rate");
             Assert.AreEqual(CapitalGainsTaxRate, year.getCapitalGainsTaxRate(), "Capital Gains Tax Rate");
-            Assert.AreEqual(0, year.getTotalWithdrawn(), "Total Withdrawn default");
+            Assert.AreEqual(new Dollars(0), year.getTotalWithdrawn(), "Total Withdrawn default");
         }
 
 
@@ -28,9 +28,9 @@ namespace testing_tests
         public void capitalGainsTax()
         {
             StockMarketYear year = newYear();
-            year.withdraw(4000);
+            year.withdraw(new Dollars(4000));
             Assert.AreEqual(333, year.capitalGainsTaxIncured(), "capital gains tax includes tax on withdrawals to cover capital gains");
-            Assert.AreEqual(4333, year.getTotalWithdrawn(), "total withdrawn includes capital gains tax");
+            Assert.AreEqual(new Dollars(4333), year.getTotalWithdrawn(), "total withdrawn includes capital gains tax");
         }
 
         [TestMethod]
@@ -38,9 +38,9 @@ namespace testing_tests
         {
             StockMarketYear year = newYear();
             Assert.AreEqual(1000, year.getInterestEarned(), "basic interest earned");
-            year.withdraw(2000);
+            year.withdraw(new Dollars(2000));
             Assert.AreEqual(800, year.getInterestEarned(), "withdrawals dont earn interest");
-            year.withdraw(2000);
+            year.withdraw(new Dollars(2000));
             Assert.AreEqual(566, year.getInterestEarned(), "capital gains tax withdrawals dont earn interest");
         }
 
@@ -48,11 +48,11 @@ namespace testing_tests
         public void endingPrincipal()
         {
             StockMarketYear year = newYear();
-            year.withdraw(1000);
+            year.withdraw(new Dollars(1000));
             Assert.AreEqual(2000, year.endingPrincipal(), "ending principal considers withdrawals");
-            year.withdraw(500);
+            year.withdraw(new Dollars(500));
             Assert.AreEqual(1500, year.endingPrincipal(), "ending principal totals mutiple withdrawals");
-            year.withdraw(3000);
+            year.withdraw(new Dollars(3000));
             Assert.AreEqual(0, year.endingPrincipal(), "ending principalnever goes below zero");
         }
 
@@ -62,11 +62,11 @@ namespace testing_tests
         public void endingBalance()
         {
             StockMarketYear year = newYear();
-            Assert.AreEqual(11000, year.getEndingBalance(), "ending balance includes interest");
-            year.withdraw(1000);
-            Assert.AreEqual(9900, year.getEndingBalance(), "ending balance includes withdrawals");
-            year.withdraw(3000);
-            Assert.AreEqual(6233, year.getEndingBalance(), "ending balance includes capital gains tax withdrawals");
+            Assert.AreEqual(new Dollars(11000), year.getEndingBalance(), "ending balance includes interest");
+            year.withdraw(new Dollars(1000));
+            Assert.AreEqual(new Dollars(9900), year.getEndingBalance(), "ending balance includes withdrawals");
+            year.withdraw(new Dollars(3000));
+            Assert.AreEqual(new Dollars(6233), year.getEndingBalance(), "ending balance includes capital gains tax withdrawals");
         }
        
         [TestMethod]
@@ -75,7 +75,7 @@ namespace testing_tests
             StockMarketYear thisYear = newYear();
             StockMarketYear nextYear = thisYear.nextYear();
             Assert.AreEqual(thisYear.getEndingBalance(), nextYear.getStartingBalance(),"Starting Balance");
-            Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal(),"Starting Principal");
+            Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal().getAmount(),"Starting Principal");
             Assert.AreEqual(thisYear.getInterestRate(), nextYear.getInterestRate(),"Interest");
             Assert.AreEqual(thisYear.getCapitalGainsTaxRate(), nextYear.getCapitalGainsTaxRate(), "capital gains tax rate");
 
