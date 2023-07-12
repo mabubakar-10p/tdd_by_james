@@ -24,6 +24,11 @@ namespace testing_tests
             Assert.AreEqual(new Dollars(20), new Dollars(50).subtractToZero(new Dollars(30)), "positive result");
             Assert.AreEqual(new Dollars(0), new Dollars(40).subtractToZero(new Dollars(100)), "non negative result -- return zero instead");
         }
+        [TestMethod] 
+        public void toInt() 
+        {
+            Assert.AreEqual(20, new Dollars(20).toInt());    
+        }
 
         [TestMethod]
         public void valueObject()

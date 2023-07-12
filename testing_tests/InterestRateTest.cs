@@ -10,12 +10,12 @@ namespace testing_tests
         public void nothing()
         {
             InterestRate rate = new InterestRate(0);
-            Assert.AreEqual(0, rate.interestOn(1000));
+            Assert.AreEqual(new Dollars(0), rate.interestOn(new Dollars(1000)));
         }
         [TestMethod]
         public void interest() {
             InterestRate rate = new InterestRate(10);
-            Assert.AreEqual(100, rate.interestOn(1000));
+            Assert.AreEqual(new Dollars(100), rate.interestOn(new Dollars(1000)));
         }
        
         [TestMethod]

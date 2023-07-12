@@ -14,7 +14,7 @@ namespace testing_application
         {
             this.amount = amount;
         }
-        public int getAmount()
+        public int toInt()
         {
             return amount;
         }

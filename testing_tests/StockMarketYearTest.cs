@@ -29,7 +29,7 @@ namespace testing_tests
         {
             StockMarketYear year = newYear();
             year.withdraw(new Dollars(4000));
-            Assert.AreEqual(333, year.capitalGainsTaxIncured(), "capital gains tax includes tax on withdrawals to cover capital gains");
+            Assert.AreEqual(new Dollars(333), year.capitalGainsTaxIncured(), "capital gains tax includes tax on withdrawals to cover capital gains");
             Assert.AreEqual(new Dollars(4333), year.getTotalWithdrawn(), "total withdrawn includes capital gains tax");
         }
 
@@ -37,11 +37,11 @@ namespace testing_tests
         public void interestEarned()
         {
             StockMarketYear year = newYear();
-            Assert.AreEqual(1000, year.getInterestEarned(), "basic interest earned");
+            Assert.AreEqual(new Dollars(1000), year.getInterestEarned(), "basic interest earned");
             year.withdraw(new Dollars(2000));
-            Assert.AreEqual(800, year.getInterestEarned(), "withdrawals dont earn interest");
+            Assert.AreEqual(new Dollars(800), year.getInterestEarned(), "withdrawals dont earn interest");
             year.withdraw(new Dollars(2000));
-            Assert.AreEqual(566, year.getInterestEarned(), "capital gains tax withdrawals dont earn interest");
+            Assert.AreEqual(new Dollars(566), year.getInterestEarned(), "capital gains tax withdrawals dont earn interest");
         }
 
         [TestMethod]
@@ -49,11 +49,11 @@ namespace testing_tests
         {
             StockMarketYear year = newYear();
             year.withdraw(new Dollars(1000));
-            Assert.AreEqual(2000, year.endingPrincipal(), "ending principal considers withdrawals");
+            Assert.AreEqual(new Dollars(2000), year.endingPrincipal(), "ending principal considers withdrawals");
             year.withdraw(new Dollars(500));
-            Assert.AreEqual(1500, year.endingPrincipal(), "ending principal totals mutiple withdrawals");
+            Assert.AreEqual(new Dollars(1500), year.endingPrincipal(), "ending principal totals mutiple withdrawals");
             year.withdraw(new Dollars(3000));
-            Assert.AreEqual(0, year.endingPrincipal(), "ending principalnever goes below zero");
+            Assert.AreEqual(new Dollars(0), year.endingPrincipal(), "ending principalnever goes below zero");
         }
 
        
@@ -75,7 +75,7 @@ namespace testing_tests
             StockMarketYear thisYear = newYear();
             StockMarketYear nextYear = thisYear.nextYear();
             Assert.AreEqual(thisYear.getEndingBalance(), nextYear.getStartingBalance(),"Starting Balance");
-            Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal().getAmount(),"Starting Principal");
+            Assert.AreEqual(thisYear.endingPrincipal(), nextYear.getStartingPrincipal(),"Starting Principal");
             Assert.AreEqual(thisYear.getInterestRate(), nextYear.getInterestRate(),"Interest");
             Assert.AreEqual(thisYear.getCapitalGainsTaxRate(), nextYear.getCapitalGainsTaxRate(), "capital gains tax rate");
 

@@ -14,9 +14,9 @@ namespace testing_application
             this.rate = (decimal)(rateAsPercentage / 100.0);
         }
         
-        public int interestOn(int amount)
+        public Dollars interestOn(Dollars amount)
         {
-            return (int)(amount * rate);
+            return new Dollars((int)(amount.toInt()  * rate));
         }
 
         public override string ToString()

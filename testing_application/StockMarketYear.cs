@@ -48,30 +48,30 @@ namespace testing_application
             return totalWithdrawals.subtractToZero(getStartingPrincipal());   
         }
 
-        public int capitalGainsTaxIncured()
+        public Dollars capitalGainsTaxIncured()
         {
-            return capitalGainsTaxRate.compoundTaxFor(capitalGainsWithdrawn().getAmount());
+            return capitalGainsTaxRate.compoundTaxFor(capitalGainsWithdrawn());
         }
         public Dollars getTotalWithdrawn()
         {
-            return totalWithdrawals.add(new Dollars(capitalGainsTaxIncured()));
+            return totalWithdrawals.add(capitalGainsTaxIncured());
         }
-        public int getInterestEarned()
+        public Dollars getInterestEarned()
         {
-            return interestRate.interestOn(startingBalance.getAmount() - getTotalWithdrawn().getAmount());
+            return interestRate.interestOn(startingBalance.subtract(getTotalWithdrawn()));
         }
         public Dollars getEndingBalance()
         {
-            return startingBalance.subtract(getTotalWithdrawn()).add(new Dollars(getInterestEarned()));
+            return startingBalance.subtract(getTotalWithdrawn()).add(getInterestEarned());
         }
-        public int endingPrincipal()
+        public Dollars endingPrincipal()
         {
-            return startingPrincipal.subtractToZero(totalWithdrawals).getAmount();
+            return startingPrincipal.subtractToZero(totalWithdrawals);
         }
       
         public StockMarketYear nextYear()
         {
-            return new StockMarketYear(this.getEndingBalance(), new Dollars(this.endingPrincipal()),this.getInterestRate(),this.getCapitalGainsTaxRate());
+            return new StockMarketYear(this.getEndingBalance(), this.endingPrincipal(),this.getInterestRate(),this.getCapitalGainsTaxRate());
         }
 
     }

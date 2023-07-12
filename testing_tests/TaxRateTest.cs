@@ -10,19 +10,19 @@ namespace testing_tests
         public void nothing()
         {
             TaxRate taxRate = new TaxRate(0);
-            Assert.AreEqual(0, taxRate.simpleTaxFor(1000));
-            Assert.AreEqual(0, taxRate.compoundTaxFor(1000));
+            Assert.AreEqual(new Dollars(0), taxRate.simpleTaxFor(new Dollars(1000)));
+            Assert.AreEqual(new Dollars(0), taxRate.compoundTaxFor(new Dollars(1000)));
         }
         [TestMethod]
         public void simpleTaxJustAppliesTaxRateToAmount() {
             TaxRate taxRate = new TaxRate(25);
-            Assert.AreEqual(250, taxRate.simpleTaxFor(1000));
+            Assert.AreEqual(new Dollars(250), taxRate.simpleTaxFor(new Dollars(1000)));
         }
         [TestMethod]
         public void compundTaxIsTheAmountofTaxThatIsIncurredIfYouAlsoPayTaxOnTheTax()
         {
             TaxRate taxRate = new TaxRate(25);
-            Assert.AreEqual(333, taxRate.compoundTaxFor(1000));
+            Assert.AreEqual(new Dollars(333), taxRate.compoundTaxFor(new Dollars(1000)));
         }
         [TestMethod]
         public void valueObject()

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace testing_application
+﻿namespace testing_application
 {
     public class TaxRate
     {
@@ -15,13 +9,13 @@ namespace testing_application
         }
       
 
-        public int simpleTaxFor(int amount)
+        public Dollars simpleTaxFor(Dollars amount)
         {
-            return (int)(amount * rate);
+            return new Dollars((int)(rate * amount.toInt()));
         }
-        public int compoundTaxFor(int amount)
+        public Dollars compoundTaxFor(Dollars amount)
         {
-            return (int)(amount / (1 - rate)) - amount;
+            return new Dollars((int)(amount.toInt() / (1 - rate)) - amount.toInt());
         }
 
         public override string ToString()
